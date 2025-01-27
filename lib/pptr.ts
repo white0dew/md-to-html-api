@@ -1,11 +1,11 @@
 import puppeteer from 'puppeteer-core'
 import { Page } from 'puppeteer-core'
 
-const DEFAULT_ENDPOINT = process.env.ENDPOINT || 'wss://chrome.browserless.io/'
-const MD_NICE = process.env.MD_NICE || 'https://mdnice.now.sh'
+const DEFAULT_ENDPOINT = 'wss://chrome.browserless.io/'
+const MD_NICE = 'https://mdnice.now.sh'
 
 function getBrowser(endpoint: string) {
-  const isDebug = Boolean(process.env.DEBUG)
+  const isDebug = false
   return isDebug ? puppeteer.launch({
     executablePath: '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     devtools: true
@@ -18,19 +18,20 @@ function setting(page: Page, config: any) {
     theme,
     codeTheme
   }) => {
-    const themeList = JSON.parse(localStorage.theme_list)
-    let id = 1
+    // const themeList = JSON.parse(localStorage.theme_list)
+    // let id = 1
     // themeId 指 themeList 中的 index
     //
     // const targetTheme = themeList.find((x, index) => id = index && x.name === theme)
     // const themeId = targetTheme ? targetTheme.themeId : 1
-    themeList.find((x, index) => (id = index) && x.name === theme)
-    const themeId = id
-    const codeThemeId = 1
+    // themeList.find((x, index) => (id = index) && x.name === theme)
+    // const themeId = id
+    // const codeThemeId = 1
 
     localStorage.content = content
-    localStorage.template_num = themeId
-    localStorage.code_num = codeThemeId
+    localStorage.style = theme
+    localStorage.template_num = 17 // 表示自定义
+    localStorage.code_num = 0 // 无用
   }, config)
 }
 
@@ -61,12 +62,12 @@ export async function getHtmlFromMd(content: string, {
       waitUntil: 'networkidle0'
     })
 
-    // 添加微信外链脚注
-    if (formatType === 'weixin') {
-      await page.evaluate(() => {
-        document.getElementById('nice-menu-link-to-foot')?.click()
-      })
-    }
+    // 添加微信外链脚注 -- 无需脚注
+    // if (formatType === 'weixin') {
+    //   await page.evaluate(() => {
+    //     document.getElementById('nice-menu-link-to-foot')?.click()
+    //   })
+    // }
 
     // 复制微信内容
     await page.click(`#nice-sidebar-${formatType}`)
@@ -77,7 +78,7 @@ export async function getHtmlFromMd(content: string, {
     })
     return html
   } catch (e) {
-    throw e
+    return "文章排版遇到错误，请重试，如果问题持续，请联系作者：whitedewstory"
   } finally {
     await browser.close()
   }

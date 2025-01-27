@@ -14,21 +14,20 @@ const typeDefs = `
     html (
       markdown: String!
       browserWSEndpoint: String
-      theme: String
+      theme: String!
       formatType: FormatType = JUEJIN
     ): String!
   }
 `
 
 const resolvers = {
-  // TODO: not work
   FormatType: {
     WECHAT: 'wechat',
     ZHIHU: 'zhihu',
     JUEJIN: 'juejin'
   },
   Query: {
-    html ({}, {
+    html({ }, {
       markdown,
       browserWSEndpoint,
       theme,
@@ -49,7 +48,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   rootValue: {},
-  formatError (e) {
+  formatError(e) {
     console.error(e)
     return e
   }
