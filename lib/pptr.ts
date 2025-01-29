@@ -78,6 +78,8 @@ export async function getHtmlFromMd(content: string, {
     })
     return html
   } catch (e) {
+    console.log("e", e.message)
+    // return "文章排版遇到错误，请重试，如果问题持续，请联系作者：whitedewstory"
     return "文章排版遇到错误，请重试，如果问题持续，请联系作者：whitedewstory"
   } finally {
     await browser.close()
