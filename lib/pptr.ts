@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core'
 import { Page } from 'puppeteer-core'
 
 const DEFAULT_ENDPOINT = 'wss://chrome.browserless.io/'
-const MD_NICE = 'https://mdnice.now.sh'
+const MD_NICE = 'https://mdnice.vercel.app/'
 
 function getBrowser(endpoint: string) {
   const isDebug = false
@@ -18,15 +18,6 @@ function setting(page: Page, config: any) {
     theme,
     codeTheme
   }) => {
-    // const themeList = JSON.parse(localStorage.theme_list)
-    // let id = 1
-    // themeId 指 themeList 中的 index
-    //
-    // const targetTheme = themeList.find((x, index) => id = index && x.name === theme)
-    // const themeId = targetTheme ? targetTheme.themeId : 1
-    // themeList.find((x, index) => (id = index) && x.name === theme)
-    // const themeId = id
-    // const codeThemeId = 1
 
     localStorage.content = content
     localStorage.style = theme
@@ -46,7 +37,11 @@ export async function getHtmlFromMd(content: string, {
   try {
     const context = browser.defaultBrowserContext()
     context.overridePermissions(MD_NICE, ['clipboard-read'])
-
+    console.log("content", content)
+    console.log("theme", theme)
+    console.log("codeTheme", codeTheme)
+    console.log("formatType", formatType)
+    console.log("browserWSEndpoint", browserWSEndpoint)
     const page = await browser.newPage()
 
     await page.goto(MD_NICE, {
@@ -62,13 +57,6 @@ export async function getHtmlFromMd(content: string, {
       waitUntil: 'networkidle0'
     })
 
-    // 添加微信外链脚注 -- 无需脚注
-    // if (formatType === 'weixin') {
-    //   await page.evaluate(() => {
-    //     document.getElementById('nice-menu-link-to-foot')?.click()
-    //   })
-    // }
-
     // 复制微信内容
     await page.click(`#nice-sidebar-${formatType}`)
 
@@ -80,7 +68,7 @@ export async function getHtmlFromMd(content: string, {
   } catch (e) {
     console.log("e", e.message)
     // return "文章排版遇到错误，请重试，如果问题持续，请联系作者：whitedewstory"
-    return "文章排版遇到错误，请重试，如果问题持续，请联系作者：whitedewstory"
+    return "排版遇到错误,请重试"
   } finally {
     await browser.close()
   }
