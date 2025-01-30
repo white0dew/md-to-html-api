@@ -36,14 +36,14 @@ export async function getHtmlFromMd(content: string, {
   console.log('成功获取浏览器实例');
   try {
     console.log('获取浏览器默认上下文');
-    const context = browser.defaultBrowserContext()
-    context.overridePermissions(MD_NICE, ['clipboard-read'])
+    const context = await browser.defaultBrowserContext()
+    await context.overridePermissions(MD_NICE, ['clipboard-read'])
     console.log("content", content)
     console.log("theme", theme)
     console.log("codeTheme", codeTheme)
     console.log("formatType", formatType)
     console.log("browserWSEndpoint", browserWSEndpoint)
-    const page = await browser.newPage()
+    const page = await context.newPage()
 
     await page.goto(MD_NICE, {
       timeout: 90000,
@@ -66,6 +66,9 @@ export async function getHtmlFromMd(content: string, {
     console.log(`成功等待 #nice-sidebar-${formatType}`);
     await page.click(`#nice-sidebar-${formatType}`)
     console.log(`成功点击 #nice-sidebar-${formatType}`);
+    //等待1s
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log(`成功等待 1s`);
 
     // 检查权限：虽然代码中已经使用
     const hasClipboardPermission = await page.evaluate(() => {
