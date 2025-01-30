@@ -33,8 +33,9 @@ export async function getHtmlFromMd(content: string, {
   formatType = 'juejin'
 }) {
   const browser = await getBrowser(browserWSEndpoint)
-
+  console.log('成功获取浏览器实例');
   try {
+    console.log('获取浏览器默认上下文');
     const context = browser.defaultBrowserContext()
     context.overridePermissions(MD_NICE, ['clipboard-read'])
     console.log("content", content)
@@ -48,17 +49,34 @@ export async function getHtmlFromMd(content: string, {
       timeout: 90000,
       waitUntil: 'networkidle0'
     });
+    console.log('成功打开新页面');
 
     // configure markdon theme and code theme
     await setting(page, { theme, codeTheme, content })
+    console.log('页面设置完成');
 
     await page.reload({
       timeout: 90000,
       waitUntil: 'networkidle0'
     })
-
+    console.log('页面重新加载完成');
     // 复制微信内容
+    // 等待元素可见：在点击元素之前，先等待元素可见或可点击。
+    await page.waitForSelector(`#nice-sidebar-${formatType}`, { visible: true });
+    console.log(`成功等待 #nice-sidebar-${formatType}`);
     await page.click(`#nice-sidebar-${formatType}`)
+    console.log(`成功点击 #nice-sidebar-${formatType}`);
+
+    // 检查权限：虽然代码中已经使用
+    const hasClipboardPermission = await page.evaluate(() => {
+    return navigator.permissions.query({ name: 'clipboard-read' as PermissionName }).then((permissionStatus) => {
+        return permissionStatus.state === 'granted';
+      });
+    });
+    if (!hasClipboardPermission) {
+      console.error('没有获取到剪贴板读取权限');
+      return "排版遇到错误,请重试";
+    }
 
     // 读取剪贴板内容
     const html = await page.evaluate(() => {
@@ -70,6 +88,7 @@ export async function getHtmlFromMd(content: string, {
     // return "文章排版遇到错误，请重试，如果问题持续，请联系作者：whitedewstory"
     return "排版遇到错误,请重试"
   } finally {
+    console.log('开始关闭浏览器');
     await browser.close()
   }
 }
