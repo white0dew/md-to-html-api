@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer-core'
 import { Page } from 'puppeteer-core'
 
 const DEFAULT_ENDPOINT = 'wss://chrome.browserless.io/'
-const MD_NICE = 'https://mdnice.vercel.app/'
+const MD_NICE = 'https://whaoa.github.io/markdown-nice/'
 
 function getBrowser(endpoint: string) {
   const isDebug = false
