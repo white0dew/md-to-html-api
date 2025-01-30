@@ -72,7 +72,7 @@ export async function getHtmlFromMd(content: string, {
 
     // 检查权限：虽然代码中已经使用
     const hasClipboardPermission = await page.evaluate(() => {
-    return navigator.permissions.query({ name: 'clipboard-read' as PermissionName }).then((permissionStatus) => {
+      return navigator.permissions.query({ name: 'clipboard-read' as PermissionName }).then((permissionStatus) => {
         return permissionStatus.state === 'granted';
       });
     });
@@ -85,6 +85,7 @@ export async function getHtmlFromMd(content: string, {
     const html = await page.evaluate(() => {
       return navigator.clipboard.readText()
     })
+    console.log('成功读取剪贴板内容', html);
     return html
   } catch (e) {
     console.log("e", e.message)
