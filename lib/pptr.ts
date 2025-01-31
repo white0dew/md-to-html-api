@@ -21,7 +21,7 @@ function setting(page: Page, config: any) {
 
     localStorage.content = content
     localStorage.style = theme
-    localStorage.template_num = 17 // 表示自定义
+    localStorage.template_num = 20 // 表示自定义
     localStorage.code_num = 0 // 无用
   }, config)
 }
