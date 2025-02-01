@@ -74,6 +74,11 @@ export async function getHtmlFromMd(content: string, {
     console.log('页面设置完成');
     console.log('页面设置耗时：', Date.now() - startTime, 'ms');
 
+    // 等待2s
+    console.log('开始等待1s，使得保存成功');
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log('成功等待 1s');
+
     // 重新加载页面
     console.log('开始页面重新加载');
     startTime = Date.now()
@@ -83,6 +88,11 @@ export async function getHtmlFromMd(content: string, {
     })
     console.log('页面重新加载完成');
     console.log('页面重新加载耗时：', Date.now() - startTime, 'ms');
+
+// 等待2s
+    console.log('开始等待2s，使得渲染成功');
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
 
     // 等待元素可见：在点击元素之前，先等待元素可见或可点击。
     console.log(`开始等待 #nice-sidebar-${formatType}`);
